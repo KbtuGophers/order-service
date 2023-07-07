@@ -61,7 +61,7 @@ func WithHTTPHandler() Configuration {
 		orderHandler := http.NewOrderHandler(h.dependencies.Service)
 
 		h.HTTP.Route("/api/v1", func(r chi.Router) {
-			r.Mount("/orders", storeHandler.Routes())
+			r.Mount("/orders", orderHandler.Routes())
 		})
 		return
 	}
