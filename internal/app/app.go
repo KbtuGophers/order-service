@@ -9,6 +9,7 @@ import (
 	"github.com/KbtuGophers/order-service/internal/repository"
 	service2 "github.com/KbtuGophers/order-service/internal/service"
 	"github.com/KbtuGophers/order-service/pkg/log"
+	"github.com/KbtuGophers/order-service/pkg/payment"
 	"github.com/KbtuGophers/order-service/pkg/server"
 	"go.uber.org/zap"
 	"os"
@@ -18,7 +19,7 @@ import (
 )
 
 const (
-	schema      = "order"
+	schema      = "service_order"
 	version     = "1.0.0"
 	description = "order-service"
 )
@@ -39,7 +40,9 @@ func Run() {
 	}
 	defer repo.Close()
 
-	service, err := service2.New(service2.WithOrderRepository(repo.Order))
+	paymentClient := payment.NewClient()
+
+	service, err := service2.New(service2.WithOrderRepository(repo.Order, paymentClient))
 	if err != nil {
 		logger.Error("ERR_INIT_SERVICE", zap.Error(err))
 		return

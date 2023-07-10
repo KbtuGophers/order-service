@@ -1,6 +1,9 @@
 package repository
 
 import (
+	"github.com/KbtuGophers/order-service/internal/domain/items"
+	"github.com/KbtuGophers/order-service/internal/domain/order"
+	"github.com/KbtuGophers/order-service/internal/domain/processes"
 	"github.com/KbtuGophers/order-service/internal/repository/postgres"
 	"github.com/KbtuGophers/order-service/pkg/database"
 )
@@ -10,6 +13,8 @@ type Configuration func(r *Repository) error
 type Repository struct {
 	postgres *database.Database
 	Order    order.Repository
+	Item     items.Repository
+	Process  processes.Repository
 }
 
 func New(configs ...Configuration) (r *Repository, err error) {
@@ -46,6 +51,8 @@ func WithPostgresStore(schema, dataSourceName string) Configuration {
 		err = nil
 
 		r.Order = postgres.NewOrderRepository(r.postgres.Client)
+		r.Item = postgres.NewItemRepository(r.postgres.Client)
+		r.Process = postgres.NewProcessRepository(r.postgres.Client)
 
 		return
 	}

@@ -42,7 +42,6 @@ func New(d Dependencies, configs ...Configuration) (h *Handler, err error) {
 func WithHTTPHandler() Configuration {
 	return func(h *Handler) (err error) {
 		h.HTTP = router.New()
-
 		//docs.SwaggerInfo.BasePath = "/api/v1"
 		//docs.SwaggerInfo.Host = h.dependencies.Configs.HTTP.Host
 		//docs.SwaggerInfo.Schemes = []string{h.dependencies.Configs.HTTP.Schema}
@@ -58,7 +57,7 @@ func WithHTTPHandler() Configuration {
 		//	httpSwagger.URL(swaggerURL.String()),
 		//))
 
-		orderHandler := http.NewOrderHandler(h.dependencies.Service)
+		orderHandler := http.NewOrderHandler(h.dependencies.Service, h.dependencies.Configs)
 
 		h.HTTP.Route("/api/v1", func(r chi.Router) {
 			r.Mount("/orders", orderHandler.Routes())

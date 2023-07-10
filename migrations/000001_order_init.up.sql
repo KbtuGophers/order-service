@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS order.orders (
+CREATE TABLE IF NOT EXISTS service_order.orders (
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     id          UUID PRIMARY KEY DEFAULT GEN_RANDOM_UUID(),
@@ -6,23 +6,24 @@ CREATE TABLE IF NOT EXISTS order.orders (
     amount      NUMERIC NOT NULL,
     currency    VARCHAR NOT NULL,
     status      VARCHAR NOT NULL, -- pending/processing/(cancelled/completed)
-    data        JSONB NOT NULL
+    data        JSONB NOT NULL,
+    billing_id  UUID NULL
 );
 
-CREATE TABLE IF NOT EXISTS order.items (
+CREATE TABLE IF NOT EXISTS service_order.items (
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     id              UUID PRIMARY KEY DEFAULT GEN_RANDOM_UUID(),
-    order_id        VARCHAR NOT NULL,
+    order_id        UUID NOT NULL,
     store_id        VARCHAR NOT NULL,
     product_id      VARCHAR NOT NULL,
     quantity        NUMERIC NOT NULL,
     price           NUMERIC NOT NULL,
     currency        VARCHAR NOT NULL,
-    FOREIGN KEY (order_id) REFERENCES orders (id)
+    FOREIGN KEY (order_id) REFERENCES service_order.orders (id)
 );
 
-CREATE TABLE IF NOT EXISTS order.processes (
+CREATE TABLE IF NOT EXISTS service_order.processes (
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     id              UUID PRIMARY KEY DEFAULT GEN_RANDOM_UUID(),
@@ -35,5 +36,5 @@ CREATE TABLE IF NOT EXISTS order.processes (
     state           VARCHAR NOT NULL, -- pending/processing/(completed/failed)
     correlation_id  VARCHAR NULL,
     data            JSONB NULL,
-    FOREIGN KEY (order_id) REFERENCES orders (id)
+    FOREIGN KEY (order_id) REFERENCES service_order.orders (id)
 );

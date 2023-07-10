@@ -2,6 +2,7 @@ package order
 
 import (
 	"github.com/shopspring/decimal"
+	"net/http"
 )
 
 type Request struct {
@@ -9,7 +10,13 @@ type Request struct {
 	Amount     decimal.Decimal `json:"amount"`
 	Currency   string          `json:"currency"`
 	Status     string          `json:"status"`
-	Data       Data            `json:"data"`
+	Data       struct {
+		Info string `json:"info"`
+	} `json:"data"`
+}
+
+func (req Request) Bind(r *http.Request) error {
+	return nil
 }
 
 type Response struct {
@@ -18,5 +25,13 @@ type Response struct {
 	Amount     decimal.Decimal `json:"amount"`
 	Currency   string          `json:"currency"`
 	Status     string          `json:"status"`
-	Data       Data            `json:"data"`
+	BillingID  string          `json:"billing_id"`
+	Data       struct {
+		Info string `json:"info"`
+	} `json:"data"`
+}
+
+func ParseFromEntity(data Entity) Response {
+	resp := Response{}
+	return resp
 }

@@ -110,7 +110,7 @@ func (s *Database) createSchema() (err error) {
 		return
 	}
 	if s.Client == nil {
-		fmt.Println("nilnil")
+		fmt.Println("nil")
 		return
 	}
 

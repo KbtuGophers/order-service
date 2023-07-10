@@ -22,7 +22,8 @@ type Entity struct {
 	Amount     *decimal.Decimal `json:"amount" db:"amount"`
 	Currency   *string          `json:"currency" db:"currency"`
 	Status     *string          `json:"status" db:"status"`
-	Data       *Data            `json:"data" db:"data"`
+	BillingID  *string          `json:"billing_id"`
+	Data       *struct {
+		Info string `json:"info"`
+	} `json:"data" db:"data"`
 }
-
-type Data struct{}
