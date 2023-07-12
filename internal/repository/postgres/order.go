@@ -25,11 +25,13 @@ func (r *OrderRepository) Get(ctx context.Context, id string) (dest order.Entity
 	return
 }
 
-func (r *OrderRepository) GetTotal(ctx context.Context, id string) (decimal.Decimal, error) {
-	//query := `
-	//	SELECT SUM()
-	//`
-	return decimal.Decimal{}, nil
+func (r *OrderRepository) GetTotal(ctx context.Context, id string) (amount decimal.Decimal, err error) {
+	query := "SELECT amount FROM orders WHERE id=$1"
+	args := []any{id}
+
+	err = r.db.QueryRowContext(ctx, query, args...).Scan(&amount)
+
+	return
 }
 
 func (r *OrderRepository) Update(ctx context.Context, id string, data order.Entity) (err error) {
@@ -38,8 +40,11 @@ func (r *OrderRepository) Update(ctx context.Context, id string, data order.Enti
 }
 
 func (r *OrderRepository) Delete(ctx context.Context, id string) (err error) {
-	//TODO implement me
-	panic("implement me")
+	query := "DELETE FROM orders WHERE id=$1"
+	args := []any{id}
+
+	_, err = r.db.ExecContext(ctx, query, args...)
+	return
 }
 
 func NewOrderRepository(db *sqlx.DB) *OrderRepository {

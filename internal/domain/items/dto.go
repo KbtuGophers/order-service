@@ -18,3 +18,32 @@ type Response struct {
 	Price     decimal.Decimal `json:"price"`
 	Currency  string          `json:"currency"`
 }
+
+func ParseFromEntity(data Entity) Response {
+	res := Response{}
+	res.ID = data.ID
+	res.OrderID = *data.OrderID
+	if data.ProductID != nil {
+		res.ProductID = *data.ProductID
+	}
+	if data.Currency != nil {
+		res.Currency = *data.Currency
+	}
+	if data.StoreID != nil {
+		res.StoreID = *data.StoreID
+	}
+
+	return res
+
+}
+
+func ParseFromEntities(data []Entity) []Response {
+	res := make([]Response, len(data))
+
+	for i := range data {
+		res[i] = ParseFromEntity(data[i])
+	}
+
+	return res
+
+}

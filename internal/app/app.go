@@ -42,7 +42,7 @@ func Run() {
 
 	paymentClient := payment.NewClient()
 
-	service, err := service2.New(service2.WithOrderRepository(repo.Order, paymentClient))
+	service, err := service2.New(service2.WithOrderRepository(repo.Order, repo.Item, paymentClient))
 	if err != nil {
 		logger.Error("ERR_INIT_SERVICE", zap.Error(err))
 		return
