@@ -1,4 +1,4 @@
-package payment
+package warehouse
 
 import (
 	"bytes"
@@ -15,7 +15,7 @@ type Client struct {
 	Endpoint string
 }
 
-func NewClient(Endpoint string) *Client {
+func NewClient(endpoint string) *Client {
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
@@ -25,7 +25,7 @@ func NewClient(Endpoint string) *Client {
 	return &Client{
 		client:   client,
 		mutex:    &sync.Mutex{},
-		Endpoint: Endpoint,
+		Endpoint: endpoint,
 	}
 }
 
@@ -48,4 +48,9 @@ func (s *Client) handler(method string, url string, body []byte) ([]byte, int, e
 	}
 
 	return resBody, res.StatusCode, nil
+}
+
+type HandlerResponse struct {
+	Success bool     `json:"success"`
+	Data    Response `json:"data"`
 }

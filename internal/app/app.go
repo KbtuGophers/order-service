@@ -40,7 +40,7 @@ func Run() {
 	}
 	defer repo.Close()
 
-	paymentClient := payment.NewClient()
+	paymentClient := payment.NewClient(cfg.ExternalServices.PaymentServiceURL)
 
 	service, err := service2.New(service2.WithOrderRepository(repo.Order, repo.Item, paymentClient))
 	if err != nil {

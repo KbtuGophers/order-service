@@ -6,12 +6,13 @@ import (
 	"net/http"
 )
 
-func (s *Client) CreateBilling(url string, req Request) (*Response, error) {
+func (s *Client) CreateBilling(req Request) (*Response, error) {
 	aByte, err := json.Marshal(req)
 	if err != nil {
 		return nil, err
 	}
 
+	url := s.Endpoint + "/payment"
 	respByte, code, err := s.handler(http.MethodPost, url, aByte)
 	if err != nil {
 		return nil, err
@@ -34,8 +35,8 @@ func (s *Client) CreateBilling(url string, req Request) (*Response, error) {
 
 }
 
-func (s *Client) Pay(url string) error {
-	_, code, err := s.handler(http.MethodGet, url, nil)
+func (s *Client) Pay(link string) error {
+	_, code, err := s.handler(http.MethodGet, link, nil)
 	if err != nil {
 		return err
 	}

@@ -35,7 +35,7 @@ func (s *Service) GetOrder(ctx context.Context, id string) (order.Response, erro
 	return resp, nil
 }
 
-func (s *Service) PayOrder(ctx context.Context, id string, url string) error {
+func (s *Service) PayOrder(ctx context.Context, id string) error {
 	//order, err := s.GetOrder(ctx, id)
 	//if err != nil {
 	//	fmt.Println("get order error")
@@ -59,13 +59,13 @@ func (s *Service) PayOrder(ctx context.Context, id string, url string) error {
 		Source:        "",
 	}
 
-	res, err := s.PaymentCLinet.CreateBilling(url+"/payment", req)
+	res, err := s.PaymentClient.CreateBilling(req)
 	if err != nil {
 		fmt.Println("Create billing error")
 		return err
 	}
 
-	err = s.PaymentCLinet.Pay(res.Link)
+	err = s.PaymentClient.Pay(res.Link)
 	if err != nil {
 		fmt.Println("Pay error")
 		return err
@@ -83,7 +83,7 @@ func (s *Service) CancelOrder(ctx context.Context, id string, url string) error 
 
 	path := url + "/payment/" + order.BillingID + "/cancel"
 
-	err = s.PaymentCLinet.Cancel(path)
+	err = s.PaymentClient.Cancel(path)
 	if err != nil {
 		return err
 	}

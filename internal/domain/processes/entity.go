@@ -30,4 +30,6 @@ type Entity struct {
 	Data          *Data     `json:"data" db:"data"`
 }
 
-type Data struct{}
+type Data struct {
+	Info string `json:"info"`
+}

@@ -4,6 +4,7 @@ import (
 	"github.com/KbtuGophers/order-service/internal/domain/items"
 	"github.com/KbtuGophers/order-service/internal/domain/order"
 	"github.com/KbtuGophers/order-service/pkg/payment"
+	"github.com/KbtuGophers/order-service/pkg/warehouse"
 )
 
 type Configuration func(s *Service) error
@@ -11,7 +12,8 @@ type Configuration func(s *Service) error
 type Service struct {
 	orderRepository order.Repository
 	itemRepository  items.Repository
-	PaymentCLinet   *payment.Client
+	PaymentClient   *payment.Client
+	ProductClient   *warehouse.Client
 }
 
 func New(configs ...Configuration) (s *Service, err error) {
@@ -31,7 +33,7 @@ func New(configs ...Configuration) (s *Service, err error) {
 func WithOrderRepository(orderRepository order.Repository, itemRepository items.Repository, paymentClient *payment.Client) Configuration {
 	return func(s *Service) error {
 		s.orderRepository = orderRepository
-		s.PaymentCLinet = paymentClient
+		s.PaymentClient = paymentClient
 		s.itemRepository = itemRepository
 		return nil
 	}

@@ -1,12 +1,27 @@
 package items
 
-import "github.com/shopspring/decimal"
+import (
+	"github.com/shopspring/decimal"
+	"net/http"
+)
 
 type Request struct {
-	OrderID   string `json:"order_id"`
-	StoreID   string `json:"store_id"`
-	ProductID string `json:"product_id"`
-	Quantity  uint   `json:"quantity"`
+	OrderID   string          `json:"order_id"`
+	StoreID   string          `json:"store_id"`
+	ProductID string          `json:"product_id"`
+	Quantity  uint            `json:"quantity"`
+	Price     decimal.Decimal `json:"price"`
+}
+
+type UpdateRequest struct {
+	OrderID   string          `json:"order_id"`
+	ProductID string          `json:"product_id"`
+	Quantity  uint            `json:"quantity"`
+	Price     decimal.Decimal `json:"price"`
+}
+
+func (r *Request) Bind(req *http.Request) error {
+	return nil
 }
 
 type Response struct {
