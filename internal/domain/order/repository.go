@@ -12,4 +12,5 @@ type Repository interface {
 	GetTotal(ctx context.Context, id string) (decimal.Decimal, error)
 	Update(ctx context.Context, id string, data Entity) (err error)
 	Delete(ctx context.Context, id string) (err error)
+	SelectOrder(ctx context.Context, customerID string) (res []Entity, err error)
 }

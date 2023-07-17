@@ -1,6 +1,10 @@
 package processes
 
-import "time"
+import (
+	"encoding/json"
+	"errors"
+	"time"
+)
 
 //created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 //updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -22,7 +26,7 @@ type Entity struct {
 	AccountID     *string   `json:"account_id" db:"account_id"`
 	OrderID       *string   `json:"order_id" db:"order_id"`
 	OrderStatus   *string   `json:"order_status" db:"order_status"`
-	Stage         *int      `json:"stage" db:"stage"`
+	Stage         *string   `json:"stage" db:"stage"`
 	Task          *string   `json:"task" db:"task"`
 	Method        *string   `json:"method" db:"method"`
 	State         *string   `json:"state" db:"state"`
@@ -32,4 +36,13 @@ type Entity struct {
 
 type Data struct {
 	Info string `json:"info"`
+}
+
+func (d *Data) Scan(value interface{}) error {
+	b, ok := value.([]byte)
+	if !ok {
+		return errors.New("type assertion to []byte failed")
+	}
+
+	return json.Unmarshal(b, &d)
 }

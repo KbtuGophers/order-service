@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS service_order.orders (
     currency    VARCHAR NOT NULL,
     status      VARCHAR NOT NULL, -- pending/processing/(cancelled/completed)
     data        JSONB NOT NULL,
-    billing_id  UUID NULL
+    billing_id  VARCHAR NULL
 );
 
 CREATE TABLE IF NOT EXISTS service_order.items (
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS service_order.processes (
     account_id      VARCHAR NOT NULL,
     order_id        UUID NOT NULL,
     order_status    VARCHAR NOT NULL,
-    stage           INTEGER NOT NULL,
+    stage           VARCHAR NOT NULL,
     task            VARCHAR NOT NULL,
     method          VARCHAR NOT NULL,
     state           VARCHAR NOT NULL, -- pending/processing/(completed/failed)

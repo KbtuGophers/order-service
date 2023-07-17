@@ -25,7 +25,12 @@ func (h *OrderHandler) Routes() chi.Router {
 
 	r := chi.NewRouter()
 	r.Post("/", h.AddOrder)
+	r.Get("/", h.OrderHistory)
 	r.Route("/{id}", func(r chi.Router) {
+		r.Get("/", h.Get)
+		r.Get("/total", h.GetTotal)
+		r.Get("/status", h.GetStatus)
+		r.Post("/reorder", h.Reorder)
 		r.Put("/checkout", h.Checkout)
 		r.Put("/cancel", h.Cancel)
 		r.Route("/product", func(r chi.Router) {
@@ -36,6 +41,99 @@ func (h *OrderHandler) Routes() chi.Router {
 
 	})
 	return r
+}
+
+func (h *OrderHandler) Get(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	httpResponse := status.Response{}
+
+	res, err := h.orderService.Get(r.Context(), id)
+	if err != nil {
+		httpResponse = status.InternalServerError(err)
+		httpResponse.Render(w, r)
+		render.JSON(w, r, httpResponse)
+		return
+	}
+
+	httpResponse = status.OK(res)
+	httpResponse.Render(w, r)
+	render.JSON(w, r, httpResponse)
+	return
+}
+
+func (h *OrderHandler) GetTotal(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	httpResponse := status.Response{}
+
+	total, err := h.orderService.GetTotalPrice(r.Context(), id)
+	if err != nil {
+		httpResponse = status.InternalServerError(err)
+		httpResponse.Render(w, r)
+		render.JSON(w, r, httpResponse)
+		return
+	}
+
+	httpResponse = status.OK(map[string]interface{}{
+		"total price": total,
+	})
+	httpResponse.Render(w, r)
+	render.JSON(w, r, httpResponse)
+	return
+}
+
+func (h *OrderHandler) Reorder(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	httpResponse := status.Response{}
+
+	orderID, err := h.orderService.Reorder(r.Context(), id)
+	if err != nil {
+		httpResponse = status.InternalServerError(err)
+		httpResponse.Render(w, r)
+		render.JSON(w, r, httpResponse)
+		return
+	}
+
+	httpResponse = status.OK(orderID)
+	httpResponse.Render(w, r)
+	render.JSON(w, r, httpResponse)
+	return
+}
+
+func (h *OrderHandler) GetStatus(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	httpResponse := status.Response{}
+
+	res, err := h.orderService.GetStatus(r.Context(), id)
+	if err != nil {
+		httpResponse = status.InternalServerError(err)
+		httpResponse.Render(w, r)
+		render.JSON(w, r, httpResponse)
+		return
+	}
+
+	httpResponse = status.OK(res)
+	httpResponse.Render(w, r)
+	render.JSON(w, r, httpResponse)
+	return
+}
+
+func (h *OrderHandler) OrderHistory(w http.ResponseWriter, r *http.Request) {
+	customerID := r.URL.Query().Get("customer_id")
+	httpResponse := status.Response{}
+
+	res, err := h.orderService.GetOrderHistory(r.Context(), customerID)
+	if err != nil {
+		httpResponse = status.InternalServerError(err)
+		httpResponse.Render(w, r)
+		render.JSON(w, r, httpResponse)
+		return
+	}
+
+	httpResponse = status.OK(res)
+	httpResponse.Render(w, r)
+	render.JSON(w, r, httpResponse)
+	return
+
 }
 
 func (h *OrderHandler) ChangeQuantity(w http.ResponseWriter, r *http.Request) {
@@ -74,7 +172,7 @@ func (h *OrderHandler) Cancel(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	httpResponse := status.Response{}
 
-	err := h.orderService.PayOrder(r.Context(), id)
+	err := h.orderService.CancelOrder(r.Context(), id)
 	if err != nil {
 		httpResponse = status.InternalServerError(err)
 		httpResponse.Render(w, r)
@@ -93,7 +191,7 @@ func (h *OrderHandler) Checkout(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	httpResponse := status.Response{}
 
-	err := h.orderService.PayOrder(r.Context(), id)
+	res, err := h.orderService.PayOrder(r.Context(), id)
 	if err != nil {
 		httpResponse = status.InternalServerError(err)
 		httpResponse.Render(w, r)
@@ -101,7 +199,7 @@ func (h *OrderHandler) Checkout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	httpResponse = status.OK(nil)
+	httpResponse = status.OK(res)
 	httpResponse.Render(w, r)
 	render.JSON(w, r, httpResponse)
 	return

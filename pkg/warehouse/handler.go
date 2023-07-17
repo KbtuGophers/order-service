@@ -49,8 +49,3 @@ func (s *Client) handler(method string, url string, body []byte) ([]byte, int, e
 
 	return resBody, res.StatusCode, nil
 }
-
-type HandlerResponse struct {
-	Success bool     `json:"success"`
-	Data    Response `json:"data"`
-}

@@ -1,6 +1,8 @@
 package order
 
 import (
+	"encoding/json"
+	"errors"
 	"github.com/shopspring/decimal"
 	"time"
 )
@@ -22,8 +24,19 @@ type Entity struct {
 	Amount     *decimal.Decimal `json:"amount" db:"amount"`
 	Currency   *string          `json:"currency" db:"currency"`
 	Status     *string          `json:"status" db:"status"`
-	BillingID  *string          `json:"billing_id"`
-	Data       *struct {
-		Info string `json:"info"`
-	} `json:"data" db:"data"`
+	Data       *Data            `json:"data" db:"data"`
+	BillingID  *string          `json:"billing_id" db:"billing_id"`
+}
+
+type Data struct {
+	Info string `json:"info"`
+}
+
+func (d *Data) Scan(value interface{}) error {
+	b, ok := value.([]byte)
+	if !ok {
+		return errors.New("type assertion to []byte failed")
+	}
+
+	return json.Unmarshal(b, &d)
 }

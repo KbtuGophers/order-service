@@ -10,9 +10,7 @@ type Request struct {
 	Amount     decimal.Decimal `json:"amount"`
 	Currency   string          `json:"currency"`
 	Status     string          `json:"status"`
-	Data       struct {
-		Info string `json:"info"`
-	} `json:"data"`
+	Data       Data            `json:"data"`
 }
 
 func (req Request) Bind(r *http.Request) error {
@@ -26,12 +24,33 @@ type Response struct {
 	Currency   string          `json:"currency"`
 	Status     string          `json:"status"`
 	BillingID  string          `json:"billing_id"`
-	Data       struct {
-		Info string `json:"info"`
-	} `json:"data"`
+	Data       Data            `json:"data"`
 }
 
 func ParseFromEntity(data Entity) Response {
-	resp := Response{}
+	resp := Response{
+		ID:         data.ID,
+		CustomerId: *data.CustomerId,
+		Amount:     *data.Amount,
+		Status:     *data.Status,
+		Currency:   *data.Currency,
+	}
+
+	if data.BillingID != nil {
+		resp.BillingID = *data.BillingID
+	}
+	if data.Data != nil {
+		resp.Data = *data.Data
+	}
+
+	return resp
+}
+
+func ParseFromEntities(data []Entity) []Response {
+	resp := make([]Response, len(data))
+	for i := range data {
+		resp[i] = ParseFromEntity(data[i])
+	}
+
 	return resp
 }

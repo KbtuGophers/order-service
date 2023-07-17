@@ -3,6 +3,7 @@ package payment
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 )
 
@@ -35,27 +36,29 @@ func (s *Client) CreateBilling(req Request) (*Response, error) {
 
 }
 
-func (s *Client) Pay(link string) error {
-	_, code, err := s.handler(http.MethodGet, link, nil)
+func (s *Client) Pay(link string) (string, error) {
+	res, code, err := s.handler(http.MethodGet, link, nil)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	if code != 200 {
-		return errors.New("unexpected status code")
+		return "", errors.New("unexpected status code")
 	}
 
-	return nil
+	return string(res), nil
 
 }
 
-func (s *Client) Cancel(url string) error {
+func (s *Client) Cancel(billingID string) error {
+	url := s.Endpoint + "/payment/" + billingID + "/cancel"
 	_, code, err := s.handler(http.MethodPost, url, nil)
 	if err != nil {
 		return err
 	}
 
 	if code != 200 {
+		fmt.Println(code)
 		return errors.New("unexpected status code")
 	}
 

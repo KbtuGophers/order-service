@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"fmt"
 	"github.com/KbtuGophers/order-service/internal/domain/items"
 	"github.com/jmoiron/sqlx"
 	"github.com/shopspring/decimal"
@@ -106,6 +107,7 @@ func (i *ItemRepository) DeleteProduct(ctx context.Context, orderID, productID s
 }
 
 func (i *ItemRepository) GetItemPrice(ctx context.Context, orderID, productID string) (string, error) {
+	fmt.Println(orderID, productID)
 	query := `SELECT price FROM items WHERE order_id=$1 and product_id=$2`
 	args := []any{orderID, productID}
 	var price string
@@ -123,7 +125,7 @@ func (i *ItemRepository) UpdateQuantity(ctx context.Context, data items.Entity) 
 	if err != nil {
 		return
 	}
-
+	fmt.Println(data.OrderID, data.ProductID)
 	query := `UPDATE items SET quantity=$1 WHERE order_id=$2 and product_id=$3`
 	args := []any{data.Quantity, data.OrderID, data.ProductID}
 

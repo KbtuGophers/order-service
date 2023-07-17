@@ -14,3 +14,9 @@ type Response struct {
 	PricePrevious decimal.Decimal `json:"price_previous"`
 	IsAvailable   bool            `json:"is_available"`
 }
+
+type HandlerResponse struct {
+	Success bool     `json:"success"`
+	Message string   `json:"message"`
+	Data    Response `json:"data"`
+}

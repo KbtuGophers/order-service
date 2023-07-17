@@ -11,6 +11,7 @@ import (
 	"github.com/KbtuGophers/order-service/pkg/log"
 	"github.com/KbtuGophers/order-service/pkg/payment"
 	"github.com/KbtuGophers/order-service/pkg/server"
+	"github.com/KbtuGophers/order-service/pkg/warehouse"
 	"go.uber.org/zap"
 	"os"
 	"os/signal"
@@ -40,9 +41,10 @@ func Run() {
 	}
 	defer repo.Close()
 
+	//fmt.Println(cfg.ExternalServices)
 	paymentClient := payment.NewClient(cfg.ExternalServices.PaymentServiceURL)
-
-	service, err := service2.New(service2.WithOrderRepository(repo.Order, repo.Item, paymentClient))
+	warehouseClient := warehouse.NewClient(cfg.ExternalServices.WarehouseServiceURL)
+	service, err := service2.New(service2.WithOrderRepository(repo.Order, repo.Item, repo.Process, paymentClient, warehouseClient))
 	if err != nil {
 		logger.Error("ERR_INIT_SERVICE", zap.Error(err))
 		return

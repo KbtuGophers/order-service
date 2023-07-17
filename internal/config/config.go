@@ -82,8 +82,8 @@ func New() (cfg Config, err error) {
 	}
 
 	cfg.ExternalServices.PaymentServiceURL = os.Getenv("EXTERNAL_PAYMENT_SERVICE_URL")
-	cfg.ExternalServices.WarehouseServiceURL = os.Getenv("EXTERNAL_PAYMENT_WAREHOUSE_URL")
-	cfg.ExternalServices.ProductServiceURL = os.Getenv("EXTERNAL_PRODUCT_WAREHOUSE_URL")
+	cfg.ExternalServices.WarehouseServiceURL = os.Getenv("EXTERNAL_WAREHOUSE_SERVICE_URL")
+	cfg.ExternalServices.ProductServiceURL = os.Getenv("EXTERNAL_PRODUCT_SERVICE_URL")
 
 	return
 }
