@@ -209,6 +209,43 @@ const docTemplate = `{
                 }
             }
         },
+		"/orders/{id}/confitm": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "path param",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "summary": "Confirm the payment",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Object"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Object"
+                        }
+                    }
+                }
+            }
+        },
         "/orders/{id}/reorder": {
             "post": {
                 "consumes": [
