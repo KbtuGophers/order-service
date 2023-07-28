@@ -146,6 +146,16 @@ func (s *Service) CancelOrder(ctx context.Context, id string) error {
 
 }
 
+func (s *Service) ConfirmOrder(ctx context.Context, id string) error {
+	err := s.processRepository.ProcessingToCompleted(ctx, id, "Отменить заказ после 20 минут бездействия клиента", "Заказ подтвержден")
+	if err != nil {
+		return nil
+	}
+
+	return nil
+
+}
+
 func (s *Service) GetOrderHistory(ctx context.Context, customerID string) ([]order.Response, error) {
 	data, err := s.orderRepository.SelectOrder(ctx, customerID)
 	if err != nil {

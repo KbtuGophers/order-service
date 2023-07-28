@@ -32,6 +32,7 @@ func (h *OrderHandler) Routes() chi.Router {
 		r.Get("/status", h.GetStatus)
 		r.Post("/reorder", h.Reorder)
 		r.Put("/checkout", h.Checkout)
+		r.Put("/confirm", h.Confirm)
 		r.Put("/cancel", h.Cancel)
 		r.Route("/product", func(r chi.Router) {
 			r.Post("/", h.AddItem)
@@ -192,6 +193,25 @@ func (h *OrderHandler) Checkout(w http.ResponseWriter, r *http.Request) {
 	httpResponse := status.Response{}
 
 	res, err := h.orderService.PayOrder(r.Context(), id)
+	if err != nil {
+		httpResponse = status.InternalServerError(err)
+		httpResponse.Render(w, r)
+		render.JSON(w, r, httpResponse)
+		return
+	}
+
+	httpResponse = status.OK(res)
+	httpResponse.Render(w, r)
+	render.JSON(w, r, httpResponse)
+	return
+}
+
+func (h *OrderHandler) Confirm(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	httpResponse := status.Response{}
+
+	err := h.orderService.ConfirmOrder(r.Context(), id)
+	res, err := h.orderService.Get(r.Context(), id)
 	if err != nil {
 		httpResponse = status.InternalServerError(err)
 		httpResponse.Render(w, r)
